@@ -28,7 +28,7 @@ export function Header({ user, onLogout }: HeaderProps) {
         {user && (
           <div className="flex items-center space-x-2">
             {user.role === "student" && <StudentProfile user={user} />}
-            <Button variant="outline" onClick={onLogout} className="flex items-center space-x-2">
+            <Button variant="outline" onClick={onLogout} className="flex items-center space-x-2 bg-transparent">
               <LogOut className="h-4 w-4" />
               <span className="hidden sm:inline">Logout</span>
             </Button>

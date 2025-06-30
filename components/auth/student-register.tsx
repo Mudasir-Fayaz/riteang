@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useRef } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -35,7 +35,6 @@ export function StudentRegister({ onRegister, onBack }: StudentRegisterProps) {
   const [loading, setLoading] = useState(false)
   const [usernameError, setUsernameError] = useState("")
   const [checkingUsername, setCheckingUsername] = useState(false)
-  const usernameTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Add username validation function
   const checkUsernameAvailability = async (username: string) => {
@@ -54,7 +53,6 @@ export function StudentRegister({ onRegister, onBack }: StudentRegisterProps) {
         setUsernameError("")
       }
     } catch (error) {
-      console.log(error)
       // No user found, username is available
       setUsernameError("")
     } finally {
@@ -99,17 +97,12 @@ export function StudentRegister({ onRegister, onBack }: StudentRegisterProps) {
               type="text"
               value={formData.username}
               onChange={(e) => {
+                handleChange(e)
                 // Debounce username check
-                if (usernameTimeout.current) {
-                  clearTimeout(usernameTimeout.current)
-                }
-                usernameTimeout.current = setTimeout(() => {
+                clearTimeout(window.usernameTimeout)
+                window.usernameTimeout = setTimeout(() => {
                   checkUsernameAvailability(e.target.value)
                 }, 500)
-                setFormData((prev) => ({
-                  ...prev,
-                  [e.target.name]: e.target.value,
-                }))
               }}
               required
               className={usernameError ? "border-red-500" : ""}
@@ -139,14 +132,9 @@ export function StudentRegister({ onRegister, onBack }: StudentRegisterProps) {
               required
             />
           </div>
-          <div className="flex space-x-1 md:space-x-2 gap-1">
-            <Button type="submit" disabled={loading || !!usernameError} className="flex-1">
-              {loading ? "Registering..." : "Register"}
-            </Button>
-            <Button type="button" variant="outline" onClick={onBack}>
-              Back
-            </Button>
-          </div>
+          <Button type="submit" disabled={loading || !!usernameError} className="w-full">
+            {loading ? "Registering..." : "Register"}
+          </Button>
         </form>
       </CardContent>
     </Card>

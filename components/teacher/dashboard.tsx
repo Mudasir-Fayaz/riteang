@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
@@ -12,24 +12,26 @@ interface TeacherDashboardProps {
   user: AuthUser
 }
 
-// interface CourseEnrollment {
-//   course_title: string
-//   join_date: string
-//   paid: boolean
-//   approved: boolean
-//   completed: boolean
-// }
+interface CourseEnrollment {
+  course_title: string
+  join_date: string
+  paid: boolean
+  approved: boolean
+  completed: boolean
+}
 
 export function TeacherDashboard({ user }: TeacherDashboardProps) {
   const [students, setStudents] = useState<Student[]>([])
   const [teacherCourses, setTeacherCourses] = useState<Course[]>([])
 
-  
+  useEffect(() => {
+    loadTeacherData()
+  }, [user.id])
 
-  const loadTeacherData = useCallback(async () => {
-      try {
-        // Load courses assigned to this teacher
-        const { data: coursesData } = await supabase.from("courses").select("*").eq("teacher", user.id)
+  const loadTeacherData = async () => {
+    try {
+      // Load courses assigned to this teacher
+      const { data: coursesData } = await supabase.from("courses").select("*").eq("teacher", user.id)
 
       setTeacherCourses(coursesData || [])
 
@@ -39,7 +41,7 @@ export function TeacherDashboard({ user }: TeacherDashboardProps) {
       // Filter students enrolled in teacher's courses
       const enrolledStudents =
         studentsData?.filter((student) =>
-          student.courses.some((course: { course_title: string }) =>
+          student.courses.some((course) =>
             coursesData?.some((teacherCourse) => teacherCourse.title === course.course_title),
           ),
         ) || []
@@ -48,11 +50,12 @@ export function TeacherDashboard({ user }: TeacherDashboardProps) {
     } catch (error) {
       console.error("Error loading teacher data:", error)
     }
-  },[user.id])
-useEffect(() => {
-    loadTeacherData()
-  }, [user.id,loadTeacherData])
- 
+  }
+
+  const getStudentCourseStatus = (student: Student, courseTitle: string) => {
+    const course = student.courses.find((c: CourseEnrollment) => c.course_title === courseTitle)
+    return course || null
+  }
 
   return (
     <div className="p-2 md:p-4 lg:p-6 space-y-3 md:space-y-6">

@@ -101,3 +101,12 @@ export interface Job {
   applicants: { student_id: string; application_date: string }[]
   created_at: string
 }
+
+export interface Contact {
+  id: number
+  fullname: string
+  email: string
+  phone: string | null
+  message: string
+  created_at: string
+}

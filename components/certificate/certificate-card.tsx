@@ -103,11 +103,11 @@ export function CertificateCard({ certificate }: CertificateCardProps) {
           <div className="flex flex-col md:flex-row justify-between items-center w-full mt-auto pt-6 md:pt-8 border-t border-gray-200">
             <div className="flex flex-col items-center md:items-start mb-6 md:mb-0">
               <div className="w-48 h-px bg-gray-400 mb-2"></div>
-              <p className="text-sm text-gray-600">Institute Head&apos;s Signature</p>
+              <p className="text-sm text-gray-600">Institute Head's Signature</p>
             </div>
             <div className="flex flex-col items-center md:items-end">
               <div className="w-48 h-px bg-gray-400 mb-2"></div>
-              <p className="text-sm text-gray-600">Student&apos;s Signature</p>
+              <p className="text-sm text-gray-600">Student's Signature</p>
             </div>
           </div>
         </div>

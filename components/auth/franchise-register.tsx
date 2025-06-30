@@ -55,7 +55,6 @@ export function FranchiseRegister({ onRegister, onBack }: FranchiseRegisterProps
         setUsernameError("")
       }
     } catch (error) {
-      console.log(error)
       setUsernameError("")
     } finally {
       setCheckingUsername(false)
@@ -77,7 +76,6 @@ export function FranchiseRegister({ onRegister, onBack }: FranchiseRegisterProps
         setEmailError("")
       }
     } catch (error) {
-      console.log(error)
       setEmailError("")
     } finally {
       setCheckingEmail(false)
@@ -181,14 +179,9 @@ export function FranchiseRegister({ onRegister, onBack }: FranchiseRegisterProps
             <Label htmlFor="password">Password</Label>
             <PasswordInput id="password" name="password" value={formData.password} onChange={handleChange} required />
           </div>
-          <div className="flex space-x-1 md:space-x-2 gap-1">
-            <Button type="submit" disabled={loading || !!usernameError || !!emailError} className="flex-1">
-              {loading ? "Registering..." : "Register"}
-            </Button>
-            <Button type="button" variant="outline" onClick={onBack}>
-              Back
-            </Button>
-          </div>
+          <Button type="submit" disabled={loading || !!usernameError || !!emailError} className="w-full">
+            {loading ? "Registering..." : "Register"}
+          </Button>
         </form>
       </CardContent>
     </Card>

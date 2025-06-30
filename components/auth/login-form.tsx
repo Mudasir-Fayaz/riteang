@@ -88,14 +88,9 @@ export function LoginForm({ role, onLogin, onBack }: LoginFormProps) {
               <span>{error}</span>
             </div>
           )}
-          <div className="flex space-x-1 md:space-x-2 gap-1">
-            <Button type="submit" disabled={loading} className="flex-1">
-              {loading ? "Logging in..." : "Login"}
-            </Button>
-            <Button type="button" variant="outline" onClick={onBack}>
-              Back
-            </Button>
-          </div>
+          <Button type="submit" disabled={loading} className="w-full">
+            {loading ? "Logging in..." : "Login"}
+          </Button>
         </form>
       </CardContent>
     </Card>

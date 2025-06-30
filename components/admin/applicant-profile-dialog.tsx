@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
@@ -17,50 +17,50 @@ export function ApplicantProfileDialog({ studentId, onClose }: ApplicantProfileD
   const [certificates, setCertificates] = useState<Certificate[]>([])
   const [loading, setLoading] = useState(true)
 
-  const loadStudentProfile = useCallback(async () => {
-  setLoading(true)
-  try {
-    // Load student data by student_id
-    const { data: studentData, error: studentError } = await supabase
-      .from("students")
-      .select("*")
-      .eq("student_id", studentId)
-      .single()
-
-    if (studentError || !studentData) {
-      console.error("Error loading student data:", studentError)
-      setStudent(null)
-      setCertificates([])
-      return
-    }
-
-    setStudent(studentData)
-
-    // Load student's certificates by student name
-    const { data: certificatesData, error: certificatesError } = await supabase
-      .from("certificates")
-      .select("*")
-      .eq("student_name", studentData.name)
-      .order("created_at", { ascending: false })
-
-    if (certificatesError) {
-      console.error("Error loading certificates:", certificatesError)
-      setCertificates([])
-      return
-    }
-
-    setCertificates(certificatesData || [])
-  } catch (error) {
-    console.error("Error loading student profile:", error)
-  } finally {
-    setLoading(false)
-  }
-}, [studentId])
-
   useEffect(() => {
     loadStudentProfile()
-    console.log(onClose)
-  }, [studentId,loadStudentProfile,onClose])
+  }, [studentId])
+
+  const loadStudentProfile = async () => {
+    setLoading(true)
+    try {
+      // Load student data by student_id
+      const { data: studentData, error: studentError } = await supabase
+        .from("students")
+        .select("*")
+        .eq("student_id", studentId)
+        .single()
+
+      if (studentError || !studentData) {
+        console.error("Error loading student data:", studentError)
+        setStudent(null)
+        setCertificates([])
+        return
+      }
+
+      setStudent(studentData)
+
+      // Load student's certificates by student name
+      const { data: certificatesData, error: certificatesError } = await supabase
+        .from("certificates")
+        .select("*")
+        .eq("student_name", studentData.name)
+        .order("created_at", { ascending: false })
+
+      if (certificatesError) {
+        console.error("Error loading certificates:", certificatesError)
+        setCertificates([])
+        return
+      }
+
+      setCertificates(certificatesData || [])
+    } catch (error) {
+      console.error("Error loading student profile:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="flex flex-col h-full">
       <div className="flex-shrink-0 pb-4">

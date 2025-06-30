@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { supabase, type Franchise } from "@/lib/supabase"
@@ -15,31 +15,28 @@ export function FranchiseDashboard({ user }: FranchiseDashboardProps) {
   const [franchise, setFranchise] = useState<Franchise | null>(null)
   const [loading, setLoading] = useState(true)
 
-  const loadFranchiseData = useCallback(async () => {
-  setLoading(true)
-  try {
-    const { data, error } = await supabase
-      .from("franchise")
-      .select("*")
-      .eq("id", user.id)
-      .single()
+  useEffect(() => {
+    loadFranchiseData()
+  }, [user.id])
 
-    if (error) {
+  const loadFranchiseData = async () => {
+    setLoading(true)
+    try {
+      const { data, error } = await supabase.from("franchise").select("*").eq("id", user.id).single()
+
+      if (error) {
+        console.error("Error loading franchise data:", error)
+        setFranchise(null)
+      } else {
+        setFranchise(data)
+      }
+    } catch (error) {
       console.error("Error loading franchise data:", error)
       setFranchise(null)
-    } else {
-      setFranchise(data)
+    } finally {
+      setLoading(false)
     }
-  } catch (error) {
-    console.error("Error loading franchise data:", error)
-    setFranchise(null)
-  } finally {
-    setLoading(false)
   }
-}, [user.id])
-useEffect(() => {
-    loadFranchiseData()
-  }, [user.id, loadFranchiseData])
 
   if (loading) {
     return (

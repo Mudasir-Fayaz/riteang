@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -19,37 +19,35 @@ export function StudentProfile({ user }: StudentProfileProps) {
   const [certificates, setCertificates] = useState<Certificate[]>([])
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [loading, setLoading] = useState(false)
-const loadStudentProfile = useCallback(async () => {
-  if (!isDialogOpen) return
 
-  setLoading(true)
-  try {
-    // Load student data
-    const { data: studentData } = await supabase
-      .from("students")
-      .select("*")
-      .eq("id", user.id)
-      .single()
+  const loadStudentProfile = async () => {
+    if (!isDialogOpen) return
 
-    setStudent(studentData)
+    setLoading(true)
+    try {
+      // Load student data
+      const { data: studentData } = await supabase.from("students").select("*").eq("id", user.id).single()
 
-    // Load student's certificates
-    const { data: certificatesData } = await supabase
-      .from("certificates")
-      .select("*")
-      .eq("student_name", studentData?.name)
-      .order("created_at", { ascending: false })
+      setStudent(studentData)
 
-    setCertificates(certificatesData || [])
-  } catch (error) {
-    console.error("Error loading student profile:", error)
-  } finally {
-    setLoading(false)
+      // Load student's certificates
+      const { data: certificatesData } = await supabase
+        .from("certificates")
+        .select("*")
+        .eq("student_name", studentData?.name)
+        .order("created_at", { ascending: false })
+
+      setCertificates(certificatesData || [])
+    } catch (error) {
+      console.error("Error loading student profile:", error)
+    } finally {
+      setLoading(false)
+    }
   }
-}, [isDialogOpen, user.id])
+
   useEffect(() => {
     loadStudentProfile()
-  }, [isDialogOpen, user.id,loadStudentProfile])
+  }, [isDialogOpen, user.id])
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

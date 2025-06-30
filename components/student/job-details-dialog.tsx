@@ -19,7 +19,7 @@ export function JobDetailsDialog({ job, onApply, hasApplied, onClose }: JobDetai
       case "active":
         return "default"
       case "completed":
-        return "secondary"
+        return "success"
       case "closed":
         return "destructive"
       default:

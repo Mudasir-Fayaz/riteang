@@ -122,7 +122,7 @@ export function JobManagement({ onUpdate }: JobManagementProps) {
       case "active":
         return "default"
       case "completed":
-        return "secondary" // Use a supported variant
+        return "success" // Assuming a 'success' variant exists or can be added
       case "closed":
         return "destructive"
       default:
